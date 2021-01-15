@@ -3,7 +3,6 @@
 #ds celui ci un max de methodes utilitaires ( l afficher ...)
 #
 #Une classe (abstraite ou pas) qui représente une piece
-#test pr le commit de la v2 dabord sans push
 import random
 import time
 from pieces import *
@@ -12,13 +11,15 @@ class Plateau:
     def __init__(self):
         self.tableau = []
         self.create()
-        # self.placer_pieces()     
+        self.placer_pieces()  
+        self.dicoLettreToPos = { "A" : 0, "B" : 1, "C" : 2, "D" : 3, "E" : 4, "F" : 5, "G" : 6, "H" : 7 }
+        self.dicoChiffreToPos = { "8" : 0, "7" : 1, "6" : 2, "5" : 3, "4" : 4, "3" : 5, "2" : 6, "1" : 7}
+        self.dicoLettreToPiece = {"P" : "ton Pion", "T" : "ta Tour", "C" : "ton Cavalier", "D" : "ta Dame", "R" : "ton Roi", "F" : "ton Fou"}
 
     def create(self):
        
         for i in range (8):
             self.tableau.append([" ", " ", " ", " ", " ", " ", " ", " "])
-
 
     def afficher(self):#on affiche le tableau de 8 cases
         repr =' '+' '+' A'+' B'+' C'+' D'+' E'+' F'+' G'+' H'+'\n' + ' ' + ' ' +'—'+'—'+ '—'+ '—'+ '—'+ '—'+ '—'+ '—'+ '—' + '—'+ '—'+ '—'+ '—'+ '—'+ '—'+ '—'+ '—' '\n'
@@ -32,9 +33,6 @@ class Plateau:
             reprLignes = ""#on efface la valeur de la ligne pour passer à la ligne du dessous
         repr = repr + '  ' + '—'+ '—'+ '—'+ '—'+ '—'+ '—'+ '—' + '—'+ '—'+ '—' + '—'+ '—' + '—'+ '—'+ '—' + '—'+ '—'
         print(repr)#à la fin on affiche la représentation globale du tableau, avec toutes les lignes
-
-       
-        
 
     def placer_pieces(self):
         pionBlanc = PionBlanc()
@@ -69,9 +67,19 @@ class Plateau:
         self.tableau[0][4] = dameNoir.get_affichage()
         self.tableau[7][4] = dameBlanc.get_affichage()
 
+    def ask_coup(self):
+        print("quelles sont les coordonnées du pion que tu veux jouer ?")
+        pionAbouger = input()
+        lettre = self.dicoLettreToPos[pionAbouger[0].upper()]
+        chiffre = self.dicoChiffreToPos[pionAbouger[1]]
+        pionSurCase = self.tableau[chiffre][lettre]
+        print(f"Ou veux-tu déplacer {self.dicoLettreToPiece[pionSurCase.upper()]} ? (exemple A5)")
+        caseVoulu = input()
+        lettreVoulu = self.dicoLettreToPos[caseVoulu[0].upper()]
+        chiffreVoulu = self.dicoChiffreToPos[caseVoulu[1]]
 
 
 
 plateau = Plateau()
-plateau.placer_pieces()
 plateau.afficher()
+plateau.ask_coup()

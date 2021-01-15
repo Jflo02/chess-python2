@@ -9,59 +9,61 @@ class Piece :
 class PionBlanc(Piece):
     
     def __init__(self):
-        self.affichage = "♟"
+        self.affichage = "P"
+
+    
 
 class PionNoir(Piece):
 
     def __init__(self):
-        self.affichage = "♙"
+        self.affichage = "p"
 
 class TourBlanc(Piece):
 
     def __init__(self):
-        self.affichage = "♜"
+        self.affichage = "T"
 
 class TourNoir(Piece):
 
     def __init__(self):
-        self.affichage = "♖"
+        self.affichage = "t"
 
 class CavalierBlanc(Piece):
 
     def __init__(self):
-        self.affichage = "♞"
+        self.affichage = "C"
 
 class CavalierNoir(Piece):
 
     def __init__(self):
-        self.affichage = "♘"
+        self.affichage = "c"
 
 class FouBlanc(Piece):
 
     def __init__(self):
-        self.affichage = "♝"
+        self.affichage = "F"
 
 class FouNoir(Piece):
 
     def __init__(self):
-        self.affichage = "♗" 
+        self.affichage = "f" 
 
 class RoiBlanc(Piece):
 
     def __init__(self):
-        self.affichage = "♚"
+        self.affichage = "R"
 
 class RoiNoir(Piece):
 
     def __init__(self):
-        self.affichage = "♔"
+        self.affichage = "r"
 
 class DameBlanc(Piece):
 
     def __init__(self):
-        self.affichage = "♛"
+        self.affichage = "D"
 
 class DameNoir(Piece):
 
     def __init__(self):
-        self.affichage = "♕" 
+        self.affichage = "d" 
