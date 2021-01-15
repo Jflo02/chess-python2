@@ -3,7 +3,7 @@
 #ds celui ci un max de methodes utilitaires ( l afficher ...)
 #
 #Une classe (abstraite ou pas) qui représente une piece
-#test pr le commit de la v2
+#test pr le commit de la v2 dabord sans push
 import random
 import time
 from pieces import *
