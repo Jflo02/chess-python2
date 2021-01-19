@@ -14,7 +14,8 @@ class Plateau:
         
         self.dicoLettreToPos = { "A" : 0, "B" : 1, "C" : 2, "D" : 3, "E" : 4, "F" : 5, "G" : 6, "H" : 7 }
         self.dicoChiffreToPos = { "8" : 0, "7" : 1, "6" : 2, "5" : 3, "4" : 4, "3" : 5, "2" : 6, "1" : 7}
-        
+        self.PosToLettre = {0 : "A", 1 : "B", 2 : "C", 3 : "D", 4 : "E", 5 : "F", 6 : "G", 7 : "H"}
+        self.PosToChiffre = {0 : "8", 1 : "7", 2 : "6", 3 : "5", 4 : "4", 5 : "3", 6 : "2", 7 : "1"}
         self.pionBlanc1 = PionBlanc(0, 1)
         self.pionBlanc2 = PionBlanc(1, 1)
         self.pionBlanc3 = PionBlanc(2, 1)
@@ -82,13 +83,13 @@ class Plateau:
         repr = repr + '  ' + '—'+ '—'+ '—'+ '—'+ '—'+ '—'+ '—' + '—'+ '—'+ '—' + '—'+ '—' + '—'+ '—'+ '—' + '—'+ '—'
         print(repr)#à la fin on affiche la représentation globale du tableau, avec toutes les lignes
 
-    def maj_pieces(self):
+    def maj_pieces(self): #on suppr l'affichage de toutes les pieces et on remet les pieces à leurs à leurs coordonnées
         self.tableau = []
         for i in range (8):
             self.tableau.append([" ", " ", " ", " ", " ", " ", " ", " "])
         
         for piece in self.tabDesPieces:
-            self.tableau[piece.coordY][piece.coordX] = piece.affichage
+            self.tableau[piece.coordY][piece.coordX] = piece.get_affichage()
 
 
     def ask_coup(self):
@@ -97,12 +98,31 @@ class Plateau:
         lettre = self.dicoLettreToPos[pionAbouger[0].upper()]
         chiffre = self.dicoChiffreToPos[pionAbouger[1]]
         pionSurCase = self.quelPionSurCetteCase(lettre, chiffre)
-        
+        #on va afficher les cases sur lesquels on peut aller
+        """#on verra ça + tard
+        print(f"{pionSurCase.nom} peut aller en : ")
+        coup_a_afficher = []
+        for coups in pionSurCase.get_coups_possibles():
+            lettre_coup = self.PosToLettre[coups[0]]
+            chiffre_coup = self.PosToChiffre[coups[1]]
+            tuple_coup_a_afficher = (lettre_coup, chiffre_coup)
+            coup_a_afficher.append(tuple_coup_a_afficher)
+        print(coup_a_afficher)
+        """
         print(f"Ou veux-tu déplacer {pionSurCase.nom} ? (exemple A5)")
         
         caseVoulu = input()
-        pionSurCase.coordX = self.dicoLettreToPos[caseVoulu[0].upper()]
-        pionSurCase.coordY = self.dicoChiffreToPos[caseVoulu[1]]
+
+        lettre_voulu = self.dicoLettreToPos[caseVoulu[0].upper()]
+        chiffre_voulu = self.dicoChiffreToPos[caseVoulu[1]]
+        while True:
+            for coups_possibles in pionSurCase.get_coups_possibles():#ici on regarde si la piece peut aller la ou on le veut
+                if lettre_voulu == coups_possibles[0] and chiffre_voulu == coups_possibles[1]:#si oui on la met
+                    pionSurCase.coordX = lettre_voulu
+                    pionSurCase.coordY = chiffre_voulu
+                    break
+            break
+                
 
     def quelPionSurCetteCase(self, x, y):
         for pieces in self.tabDesPieces:
@@ -114,7 +134,8 @@ class Plateau:
 
 plateau = Plateau()
 plateau.afficher()
-for i in range (4):
+
+for i in range (10):
     plateau.ask_coup()
     plateau.maj_pieces()
     plateau.afficher()
