@@ -16,49 +16,49 @@ class Plateau:
         self.dicoChiffreToPos = { "8" : 0, "7" : 1, "6" : 2, "5" : 3, "4" : 4, "3" : 5, "2" : 6, "1" : 7}
         self.PosToLettre = {0 : "A", 1 : "B", 2 : "C", 3 : "D", 4 : "E", 5 : "F", 6 : "G", 7 : "H"}
         self.PosToChiffre = {0 : "8", 1 : "7", 2 : "6", 3 : "5", 4 : "4", 5 : "3", 6 : "2", 7 : "1"}
-        self.pionBlanc1 = PionBlanc(0, 1)
-        self.pionBlanc2 = PionBlanc(1, 1)
-        self.pionBlanc3 = PionBlanc(2, 1)
-        self.pionBlanc4 = PionBlanc(3, 1)
-        self.pionBlanc5 = PionBlanc(4, 1)
-        self.pionBlanc6 = PionBlanc(5, 1)
-        self.pionBlanc7 = PionBlanc(6, 1)
-        self.pionBlanc8 = PionBlanc(7, 1)
+        self.pionBlanc1 = PionBlanc(0, 6)
+        self.pionBlanc2 = PionBlanc(1, 6)
+        self.pionBlanc3 = PionBlanc(2, 6)
+        self.pionBlanc4 = PionBlanc(3, 6)
+        self.pionBlanc5 = PionBlanc(4, 6)
+        self.pionBlanc6 = PionBlanc(5, 6)
+        self.pionBlanc7 = PionBlanc(6, 6)
+        self.pionBlanc8 = PionBlanc(7, 6)
 
-        self.tourBlanc1 = TourBlanc(0, 0)
-        self.tourBlanc2 = TourBlanc(7, 0)
+        self.tourBlanc1 = TourBlanc(0, 7)
+        self.tourBlanc2 = TourBlanc(7, 7)
         
-        self.cavalierBlanc1 = CavalierBlanc(1, 0)
-        self.cavalierBlanc2 = CavalierBlanc(6, 0)
+        self.cavalierBlanc1 = CavalierBlanc(1, 7)
+        self.cavalierBlanc2 = CavalierBlanc(6, 7)
         
-        self.fouBlanc1 = FouBlanc(2, 0)
-        self.fouBlanc2 = FouBlanc(5, 0)
+        self.fouBlanc1 = FouBlanc(2, 7)
+        self.fouBlanc2 = FouBlanc(5, 7)
 
-        self.roiBlanc = RoiBlanc(3, 0)
+        self.roiBlanc = RoiBlanc(3, 7)
 
-        self.dameBlanc = DameBlanc(4, 0)
+        self.dameBlanc = DameBlanc(4, 7)
         
-        self.pionNoir1 = PionNoir(0, 6)
-        self.pionNoir2 = PionNoir(1, 6)
-        self.pionNoir3 = PionNoir(2, 6)
-        self.pionNoir4 = PionNoir(3, 6)
-        self.pionNoir5 = PionNoir(4, 6)
-        self.pionNoir6 = PionNoir(5, 6)
-        self.pionNoir7 = PionNoir(6, 6)
-        self.pionNoir8 = PionNoir(7, 6)
+        self.pionNoir1 = PionNoir(0, 1)
+        self.pionNoir2 = PionNoir(1, 1)
+        self.pionNoir3 = PionNoir(2, 1)
+        self.pionNoir4 = PionNoir(3, 1)
+        self.pionNoir5 = PionNoir(4, 1)
+        self.pionNoir6 = PionNoir(5, 1)
+        self.pionNoir7 = PionNoir(6, 1)
+        self.pionNoir8 = PionNoir(7, 1)
         
-        self.tourNoir1 = TourNoir(0, 7)
-        self.tourNoir2 = TourNoir(7, 7)
+        self.tourNoir1 = TourNoir(0, 0)
+        self.tourNoir2 = TourNoir(7, 0)
         
-        self.cavalierNoir1 = CavalierNoir(1, 7)
-        self.cavalierNoir2 = CavalierNoir(6, 7)
+        self.cavalierNoir1 = CavalierNoir(1, 0)
+        self.cavalierNoir2 = CavalierNoir(6, 0)
 
-        self.fouNoir1 = FouNoir(2, 7)
-        self.fouNoir2 = FouNoir(5, 7)
+        self.fouNoir1 = FouNoir(2, 0)
+        self.fouNoir2 = FouNoir(5, 0)
         
-        self.roiNoir = RoiNoir(3, 7)
+        self.roiNoir = RoiNoir(3, 0)
         
-        self.dameNoir = DameNoir(4, 7)
+        self.dameNoir = DameNoir(4, 0)
         
          
         self.tabDesPieces = [self.pionBlanc1, self.pionBlanc2,self.pionBlanc3, self.pionBlanc4, self.pionBlanc5, self.pionBlanc6, self.pionBlanc7, self.pionBlanc8, self.tourBlanc1, self.tourBlanc2, self.cavalierBlanc1, self.cavalierBlanc2, self.fouBlanc1, self.fouBlanc2, self.roiBlanc, self.dameBlanc, self.pionNoir1, self.pionNoir2,self.pionNoir3, self.pionNoir4, self.pionNoir5, self.pionNoir6, self.pionNoir7, self.pionNoir8, self.tourNoir1, self.tourNoir2, self.cavalierNoir1, self.cavalierNoir2, self.fouNoir1, self.fouNoir2, self.roiNoir, self.dameNoir]
@@ -92,50 +92,89 @@ class Plateau:
             self.tableau[piece.coordY][piece.coordX] = piece.get_affichage()
 
 
-    def ask_coup(self):
-        print("quelles sont les coordonnées du pion que tu veux jouer ?")
+    def bouger(self):
+        print("quelles sont les coordonnées de la pièce que tu veux jouer ?")
         pionAbouger = input()
         lettre = self.dicoLettreToPos[pionAbouger[0].upper()]
         chiffre = self.dicoChiffreToPos[pionAbouger[1]]
         pionSurCase = self.quelPionSurCetteCase(lettre, chiffre)
-        #on va afficher les cases sur lesquels on peut aller
-        """#on verra ça + tard
-        print(f"{pionSurCase.nom} peut aller en : ")
-        coup_a_afficher = []
-        for coups in pionSurCase.get_coups_possibles():
-            lettre_coup = self.PosToLettre[coups[0]]
-            chiffre_coup = self.PosToChiffre[coups[1]]
-            tuple_coup_a_afficher = (lettre_coup, chiffre_coup)
-            coup_a_afficher.append(tuple_coup_a_afficher)
-        print(coup_a_afficher)
-        """
+        print("MISE EN PLACE ton pion peut aller en :")
+        print(pionSurCase.get_coups_possibles(self.tableau))
+
+        
+
         print(f"Ou veux-tu déplacer {pionSurCase.nom} ? (exemple A5)")
         
         caseVoulu = input()
-
         lettre_voulu = self.dicoLettreToPos[caseVoulu[0].upper()]
         chiffre_voulu = self.dicoChiffreToPos[caseVoulu[1]]
-        while True:
-            for coups_possibles in pionSurCase.get_coups_possibles():#ici on regarde si la piece peut aller la ou on le veut
-                if lettre_voulu == coups_possibles[0] and chiffre_voulu == coups_possibles[1]:#si oui on la met
-                    pionSurCase.coordX = lettre_voulu
-                    pionSurCase.coordY = chiffre_voulu
-                    break
-            break
+
+        #pion blanc manger en diagonale
+        if pionSurCase.affichage == "P":
+            if chiffre_voulu == pionSurCase.coordY-1:#useless
+                if (lettre_voulu == pionSurCase.coordX+1) or (lettre_voulu == pionSurCase.coordX-1):
+                    for pieces in self.tabDesPieces:
+                        if (pieces.coordX == lettre_voulu) and pieces.coordY == chiffre_voulu:
+                            if (pionSurCase.couleur != pieces.couleur):
+                                try:
+                                    pieceAremove = self.quelPionSurCetteCase(lettre_voulu, chiffre_voulu)
+                                    self.tabDesPieces.remove(pieceAremove)
+                                    pionSurCase.coordX = lettre_voulu
+                                    pionSurCase.coordY = chiffre_voulu
+                                    break
+                                except:
+                                    pass
+        #pion noir manger en diagonale
+        if pionSurCase.affichage == "p":
+            if chiffre_voulu == pionSurCase.coordY+1:#useless
+                if (lettre_voulu == pionSurCase.coordX+1) or (lettre_voulu == pionSurCase.coordX-1):
+                    for pieces in self.tabDesPieces:
+                        if (pieces.coordX == lettre_voulu) and pieces.coordY == chiffre_voulu:
+                            if (pionSurCase.couleur != pieces.couleur):
+                                try:
+                                    pieceAremove = self.quelPionSurCetteCase(lettre_voulu, chiffre_voulu)
+                                    self.tabDesPieces.remove(pieceAremove)
+                                    pionSurCase.coordX = lettre_voulu
+                                    pionSurCase.coordY = chiffre_voulu
+                                    break
+                                except:
+                                    pass
+
+        #deplacement des autres pieces
+        for coups_possibles in pionSurCase.get_coups_possibles(self.tableau):
+            #on va regarder si on est sur une piece avant de bouger pr pvr la suppr
+            for pieces in self.tabDesPieces:#on regarde pour chaque piece
+                if (pieces.coordX == coups_possibles[0]) & (pieces.coordY == coups_possibles[1]) & (pionSurCase.couleur != pieces.couleur):#si les co d un piece correspondent à un coup possible & color != :
+                    for possible_stroke in pionSurCase.get_coups_possibles(self.tableau):#pr chaque coup possible (anti cheat)
+                        try:#on empeche les erreurs liés à la couleur pr les cases vides
+                            if (lettre_voulu == possible_stroke[0]) & (chiffre_voulu == possible_stroke[1]) & (pionSurCase.couleur != self.quelPionSurCetteCase(possible_stroke[0], possible_stroke[1]).couleur):
+                                pieceAremove = self.quelPionSurCetteCase(lettre_voulu, chiffre_voulu)
+                                self.tabDesPieces.remove(pieceAremove)
+                                pionSurCase.coordX = lettre_voulu
+                                pionSurCase.coordY = chiffre_voulu
+                        except:
+                            pass
+
+            if lettre_voulu == coups_possibles[0] and chiffre_voulu == coups_possibles[1]:#si on est pas sur une autre piece : on se déplace normalement
+                pionSurCase.coordX = lettre_voulu
+                pionSurCase.coordY = chiffre_voulu
+                break
                 
+
 
     def quelPionSurCetteCase(self, x, y):
         for pieces in self.tabDesPieces:
             if pieces.coordX == x and pieces.coordY == y:
-                break
-        return pieces #on return l'indoce de l'objet qu'on souhaite
+                return pieces
+        
 
 
 
 plateau = Plateau()
 plateau.afficher()
 
-for i in range (10):
-    plateau.ask_coup()
+while True:
+    plateau.bouger()
     plateau.maj_pieces()
     plateau.afficher()
+    
