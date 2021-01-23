@@ -19,21 +19,20 @@ class PionBlanc(Piece):
     
     def get_coups_possibles(self, board):#on veut connaitre vers quelle position peut se déplacer la piece
         coups_possibles = []
-        tuple_du_coup = (self.coordX, self.coordY-1)
-        if board[self.coordY-1][self.coordX] == " ":
+        
+        if self.coordY-1 >=0 and board[self.coordY-1][self.coordX] == " ":
+            tuple_du_coup = (self.coordX, self.coordY-1)
             coups_possibles.append(tuple_du_coup)
-        try:
-            if board[self.coordY-1][self.coordX+1] != " ":
-                tuple_du_coup = (self.coordX+1, self.coordY-1)
-                coups_possibles.append(tuple_du_coup)
-        except:
-            pass
-        try:
-            if board[self.coordY-1][self.coordX-1] != " ":
-                tuple_du_coup = (self.coordX-1, self.coordY-1)
-                coups_possibles.append(tuple_du_coup)
-        except:
-            pass
+        
+        if self.coordY-1 >=0 and self.coordX+1 <8 and board[self.coordY-1][self.coordX+1] != " ":
+            tuple_du_coup = (self.coordX+1, self.coordY-1)
+            coups_possibles.append(tuple_du_coup)
+        
+        
+        if self.coordY-1 >=0 and self.coordX-1 >=0 and board[self.coordY-1][self.coordX-1] != " ":
+            tuple_du_coup = (self.coordX-1, self.coordY-1)
+            coups_possibles.append(tuple_du_coup)
+
         if self.coordY == 6:
             tuple_du_coup = (self.coordX, self.coordY-2)
             coups_possibles.append(tuple_du_coup)
@@ -81,7 +80,8 @@ class TourBlanc(Piece):
 
         #coup de la tour en haut
         for i in range(1, 8):
-            try:
+            
+            if self.coordY-i >=0:
                 if board[self.coordY-i][self.coordX] == " ":
                     coup = (self.coordX, self.coordY-i)
                     coups_possibles.append(coup)
@@ -90,12 +90,11 @@ class TourBlanc(Piece):
                         coup = (self.coordX, self.coordY-i)
                         coups_possibles.append(coup)
                     break
-            except:
-                pass
+                
 
         #coup de la tour en bas
         for i in range(1, 8):
-            try:
+            if self.coordY+i <8:
                 if board[self.coordY+i][self.coordX] == " ":
                     coup = (self.coordX, self.coordY+i)
                     coups_possibles.append(coup)
@@ -104,38 +103,32 @@ class TourBlanc(Piece):
                         coup = (self.coordX, self.coordY+i)
                         coups_possibles.append(coup)
                     break
-            except:
-                pass
+            
 
         #coup de la tour a gauche
-        for i in range(1, 8):
-            try:
-                if self.coordX-i >=0:
-                    if board[self.coordY][self.coordX-i] == " ":
+        for i in range(1, 8):  
+            if self.coordX-i >=0:
+                if board[self.coordY][self.coordX-i] == " ":
+                    coup = (self.coordX-i, self.coordY)
+                    coups_possibles.append(coup)
+                else:
+                    if board[self.coordY][self.coordX-i] in ["p", "t", "c", "f", "r", "d"]:
                         coup = (self.coordX-i, self.coordY)
                         coups_possibles.append(coup)
-                    else:
-                        if board[self.coordY][self.coordX-i] in ["p", "t", "c", "f", "r", "d"]:
-                            coup = (self.coordX-i, self.coordY)
-                            coups_possibles.append(coup)
-                        break
-            except:
-                pass
-
+                    break
+    
         #coup de la tour a droite
         for i in range(1, 8):
-            try:
-                if self.coordX-i <=7:
-                    if board[self.coordY][self.coordX+i] == " ":
+            if self.coordX+i <8:
+                if board[self.coordY][self.coordX+i] == " ":
+                    coup = (self.coordX+i, self.coordY)
+                    coups_possibles.append(coup)
+                else:
+                    if board[self.coordY][self.coordX+i] in ["p", "t", "c", "f", "r", "d"]:
                         coup = (self.coordX+i, self.coordY)
                         coups_possibles.append(coup)
-                    else:
-                        if board[self.coordY][self.coordX+i] in ["p", "t", "c", "f", "r", "d"]:
-                            coup = (self.coordX+i, self.coordY)
-                            coups_possibles.append(coup)
-                        break
-            except:
-                pass
+                    break
+            
         return coups_possibles
 
 class TourNoir(Piece):
@@ -151,22 +144,21 @@ class TourNoir(Piece):
 
         #coup de la tour en haut
         for i in range(1, 8):
-            try:
-                if self.coordY-i >=0:
-                    if board[self.coordY-i][self.coordX] == " ":
+            
+            if self.coordY-i >=0:
+                if board[self.coordY-i][self.coordX] == " ":
+                    coup = (self.coordX, self.coordY-i)
+                    coups_possibles.append(coup)
+                else:
+                    if board[self.coordY-i][self.coordX] in ["P", "T", "C", "F", "R", "D"]:
                         coup = (self.coordX, self.coordY-i)
                         coups_possibles.append(coup)
-                    else:
-                        if board[self.coordY-i][self.coordX] in ["P", "T", "C", "F", "R", "D"]:
-                            coup = (self.coordX, self.coordY-i)
-                            coups_possibles.append(coup)
-                        break
-            except:
-                pass
+                    break
+                
 
-        #coup de la tour derriere elle
+        #coup de la tour en bas
         for i in range(1, 8):
-            try:
+            if self.coordY+i <8:
                 if board[self.coordY+i][self.coordX] == " ":
                     coup = (self.coordX, self.coordY+i)
                     coups_possibles.append(coup)
@@ -175,38 +167,32 @@ class TourNoir(Piece):
                         coup = (self.coordX, self.coordY+i)
                         coups_possibles.append(coup)
                     break
-            except:
-                pass
+            
 
         #coup de la tour a gauche
-        for i in range(1, 8):
-            try:
-                if self.coordX-i >=0:
-                    if board[self.coordY][self.coordX-i] == " ":
+        for i in range(1, 8):  
+            if self.coordX-i >=0:
+                if board[self.coordY][self.coordX-i] == " ":
+                    coup = (self.coordX-i, self.coordY)
+                    coups_possibles.append(coup)
+                else:
+                    if board[self.coordY][self.coordX-i] in ["P", "T", "C", "F", "R", "D"]:
                         coup = (self.coordX-i, self.coordY)
                         coups_possibles.append(coup)
-                    else:
-                        if board[self.coordY][self.coordX-i] in ["P", "T", "C", "F", "R", "D"]:
-                            coup = (self.coordX-i, self.coordY)
-                            coups_possibles.append(coup)
-                        break
-            except:
-                pass
-
+                    break
+    
         #coup de la tour a droite
         for i in range(1, 8):
-            try:
-                if self.coordX-i <=7:
-                    if board[self.coordY][self.coordX+i] == " ":
+            if self.coordX+i <8:
+                if board[self.coordY][self.coordX+i] == " ":
+                    coup = (self.coordX+i, self.coordY)
+                    coups_possibles.append(coup)
+                else:
+                    if board[self.coordY][self.coordX+i] in ["P", "T", "C", "F", "R", "D"]:
                         coup = (self.coordX+i, self.coordY)
                         coups_possibles.append(coup)
-                    else:
-                        if board[self.coordY][self.coordX+i] in ["P", "T", "C", "F", "R", "D"]:
-                            coup = (self.coordX+i, self.coordY)
-                            coups_possibles.append(coup)
-                        break
-            except:
-                pass
+                    break
+            
         return coups_possibles
 
 class CavalierBlanc(Piece):
@@ -294,53 +280,57 @@ class FouBlanc(Piece):
 
         #en haut a gauche
         for i in range (1,8):
-            if self.coordX-i >= 0 and self.coordY-i >=0 and board[self.coordY-i][self.coordX-i] == " ":
-                tuple_du_coup = (self.coordX-i, self.coordY-i)
-                coups_possibles.append(tuple_du_coup)
-            elif board[self.coordY-i][self.coordX-i] not in ["P", "T", "C", "F", "R", "D"]:
-                if self.coordX-i >= 0 and self.coordY-i >=0:
+            if self.coordX-i >= 0 and self.coordY-i >=0:
+                if board[self.coordY-i][self.coordX-i] == " ":
                     tuple_du_coup = (self.coordX-i, self.coordY-i)
                     coups_possibles.append(tuple_du_coup)
-                    break
+                elif board[self.coordY-i][self.coordX-i] not in ["P", "T", "C", "F", "R", "D"]:
+                    if self.coordX-i >= 0 and self.coordY-i >=0:
+                        tuple_du_coup = (self.coordX-i, self.coordY-i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
             else:
                 break
             
         #en haut a droite
         for i in range (1,8):
-            if self.coordX+i < 8 and self.coordY-i >=0 and board[self.coordY-i][self.coordX+i] == " ":
-                tuple_du_coup = (self.coordX+i, self.coordY-i)
-                coups_possibles.append(tuple_du_coup)
-            elif board[self.coordY-i][self.coordX+i] not in ["P", "T", "C", "F", "R", "D"]:
-                if self.coordX+i < 8 and self.coordY-i >=0:
+            if self.coordX+i < 8 and self.coordY-i >=0:
+                if board[self.coordY-i][self.coordX+i] == " ":
                     tuple_du_coup = (self.coordX+i, self.coordY-i)
                     coups_possibles.append(tuple_du_coup)
-                    break
+                elif board[self.coordY-i][self.coordX+i] not in ["P", "T", "C", "F", "R", "D"]:
+                    if self.coordX+i < 8 and self.coordY-i >=0:
+                        tuple_du_coup = (self.coordX+i, self.coordY-i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
             else:
                 break
 
         #en bas a droite
         for i in range (1,8):
-            if self.coordX+i < 8 and self.coordY+i <8 and board[self.coordY+i][self.coordX+i] == " ":
-                tuple_du_coup = (self.coordX+i, self.coordY+i)
-                coups_possibles.append(tuple_du_coup)
-            elif board[self.coordY+i][self.coordX+i] not in ["P", "T", "C", "F", "R", "D"]:
-                if self.coordX+i >= 0 and self.coordY+i >=0:
+            if self.coordX+i < 8 and self.coordY+i <8:
+                if board[self.coordY+i][self.coordX+i] == " ":
                     tuple_du_coup = (self.coordX+i, self.coordY+i)
                     coups_possibles.append(tuple_du_coup)
-                    break
+                elif board[self.coordY+i][self.coordX+i] not in ["P", "T", "C", "F", "R", "D"]:
+                    if self.coordX+i >= 0 and self.coordY+i >=0:
+                        tuple_du_coup = (self.coordX+i, self.coordY+i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
             else:
                 break
 
         #en bas a gauche
         for i in range (1,8):
-            if self.coordX-i >=0 and self.coordY+i <8 and board[self.coordY+i][self.coordX-i] == " ":
-                tuple_du_coup = (self.coordX-i, self.coordY+i)
-                coups_possibles.append(tuple_du_coup)
-            elif board[self.coordY+i][self.coordX-i] not in ["P", "T", "C", "F", "R", "D"]:
-                if self.coordX-i >=0 and self.coordY+i < 8:
+            if self.coordX-i >=0 and self.coordY+i <8:
+                if board[self.coordY+i][self.coordX-i] == " ":
                     tuple_du_coup = (self.coordX-i, self.coordY+i)
                     coups_possibles.append(tuple_du_coup)
-                    break
+                elif board[self.coordY+i][self.coordX-i] not in ["P", "T", "C", "F", "R", "D"]:
+                    if self.coordX-i >=0 and self.coordY+i < 8:
+                        tuple_du_coup = (self.coordX-i, self.coordY+i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
             else:
                 break
 
@@ -359,59 +349,60 @@ class FouNoir(Piece):
 
         #en haut a gauche
         for i in range (1,8):
-            if self.coordX-i >= 0 and self.coordY-i >=0 and board[self.coordY-i][self.coordX-i] == " ":
-                tuple_du_coup = (self.coordX-i, self.coordY-i)
-                coups_possibles.append(tuple_du_coup)
-            elif board[self.coordY-i][self.coordX-i] not in ["p", "t", "c", "f", "r", "d"]:
-                if self.coordX-i >= 0 and self.coordY-i >=0:
+            if self.coordX-i >= 0 and self.coordY-i >=0:
+                if board[self.coordY-i][self.coordX-i] == " ":
                     tuple_du_coup = (self.coordX-i, self.coordY-i)
                     coups_possibles.append(tuple_du_coup)
+                elif board[self.coordY-i][self.coordX-i] not in ["p", "t", "c", "f", "r", "d"]:
+                    if self.coordX-i >= 0 and self.coordY-i >=0:
+                        tuple_du_coup = (self.coordX-i, self.coordY-i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
+                else:
                     break
-            else:
-                break
             
         #en haut a droite
         for i in range (1,8):
-            if self.coordX+i < 8 and self.coordY-i >=0 and board[self.coordY-i][self.coordX+i] == " ":
-                tuple_du_coup = (self.coordX+i, self.coordY-i)
-                coups_possibles.append(tuple_du_coup)
-            elif board[self.coordY-i][self.coordX+i] not in ["p", "t", "c", "f", "r", "d"]:
-                if self.coordX+i < 8 and self.coordY-i >=0:
+            if self.coordX+i < 8 and self.coordY-i >=0:
+                if board[self.coordY-i][self.coordX+i] == " ":
                     tuple_du_coup = (self.coordX+i, self.coordY-i)
                     coups_possibles.append(tuple_du_coup)
+                elif board[self.coordY-i][self.coordX+i] not in ["p", "t", "c", "f", "r", "d"]:
+                    if self.coordX+i < 8 and self.coordY-i >=0:
+                        tuple_du_coup = (self.coordX+i, self.coordY-i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
+                else:
                     break
-            else:
-                break
 
         #en bas a droite
         for i in range (1,8):
-            if self.coordX+i < 8 and self.coordY+i <8 and board[self.coordY+i][self.coordX+i] == " ":
-                tuple_du_coup = (self.coordX+i, self.coordY+i)
-                coups_possibles.append(tuple_du_coup)
-            elif board[self.coordY+i][self.coordX+i] not in ["p", "t", "c", "f", "r", "d"]:
-                if self.coordX+i >= 0 and self.coordY+i >=0:
+            if self.coordX+i < 8 and self.coordY+i <8:
+                if board[self.coordY+i][self.coordX+i] == " ":
                     tuple_du_coup = (self.coordX+i, self.coordY+i)
                     coups_possibles.append(tuple_du_coup)
+                elif board[self.coordY+i][self.coordX+i] not in ["p", "t", "c", "f", "r", "d"]:
+                    if self.coordX+i >= 0 and self.coordY+i >=0:
+                        tuple_du_coup = (self.coordX+i, self.coordY+i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
+                else:
                     break
-            else:
-                break
 
         #en bas a gauche
         for i in range (1,8):
-            if self.coordX-i >=0 and self.coordY+i <8 and board[self.coordY+i][self.coordX-i] == " ":
-                tuple_du_coup = (self.coordX-i, self.coordY+i)
-                coups_possibles.append(tuple_du_coup)
-            elif board[self.coordY+i][self.coordX-i] not in ["p", "t", "c", "f", "r", "d"]:
-                if self.coordX-i >=0 and self.coordY+i < 8:
+            if self.coordX-i >=0 and self.coordY+i <8:
+                if board[self.coordY+i][self.coordX-i] == " ":
                     tuple_du_coup = (self.coordX-i, self.coordY+i)
                     coups_possibles.append(tuple_du_coup)
+                elif board[self.coordY+i][self.coordX-i] not in ["p", "t", "c", "f", "r", "d"]:
+                    if self.coordX-i >=0 and self.coordY+i < 8:
+                        tuple_du_coup = (self.coordX-i, self.coordY+i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
+                else:
                     break
-            else:
-                break
 
-        return coups_possibles #on return un tableau avec dans chaque case le tuple (x,y) dans lequel il a le droit de se deplacer
-        
-            
         return coups_possibles #on return un tableau avec dans chaque case le tuple (x,y) dans lequel il a le droit de se deplacer
         
 class RoiBlanc(Piece):
@@ -454,8 +445,6 @@ class RoiBlanc(Piece):
 
         return coups_possibles #on return un tableau avec dans chaque case le tuple (x,y) dans lequel il a le droit de se deplacer
 
-    
-
 class RoiNoir(Piece):
 
     def __init__(self, coordX, coordY):
@@ -496,9 +485,7 @@ class RoiNoir(Piece):
 
         return coups_possibles #on return un tableau avec dans chaque case le tuple (x,y) dans lequel il a le droit de se deplacer
 
-    
-
-class DameBlanc(RoiBlanc, FouBlanc):
+class DameBlanc(Piece):
 
     def __init__(self, coordX, coordY):
         super().__init__(coordX, coordY)
@@ -507,17 +494,146 @@ class DameBlanc(RoiBlanc, FouBlanc):
         self.couleur = "blanc"
 
     def get_coups_possibles(self, board):#on veut connaitre vers quelle position peut se déplacer la piece
-        coups_possibles = []
+        coups_possibles = []        
+        
+        #coup du fou blanc
+        #en haut a gauche
+        for i in range (1,8):
+            if self.coordX-i >= 0 and self.coordY-i >=0:
+                if board[self.coordY-i][self.coordX-i] == " ":
+                    tuple_du_coup = (self.coordX-i, self.coordY-i)
+                    coups_possibles.append(tuple_du_coup)
+                elif board[self.coordY-i][self.coordX-i] not in ["P", "T", "C", "F", "R", "D"]:
+                    if self.coordX-i >= 0 and self.coordY-i >=0:
+                        tuple_du_coup = (self.coordX-i, self.coordY-i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
+            else:
+                break
+            
+        #en haut a droite
+        for i in range (1,8):
+            if self.coordX+i < 8 and self.coordY-i >=0:
+                if board[self.coordY-i][self.coordX+i] == " ":
+                    tuple_du_coup = (self.coordX+i, self.coordY-i)
+                    coups_possibles.append(tuple_du_coup)
+                elif board[self.coordY-i][self.coordX+i] not in ["P", "T", "C", "F", "R", "D"]:
+                    if self.coordX+i < 8 and self.coordY-i >=0:
+                        tuple_du_coup = (self.coordX+i, self.coordY-i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
+            else:
+                break
+
+        #en bas a droite
+        for i in range (1,8):
+            if self.coordX+i < 8 and self.coordY+i <8:
+                if board[self.coordY+i][self.coordX+i] == " ":
+                    tuple_du_coup = (self.coordX+i, self.coordY+i)
+                    coups_possibles.append(tuple_du_coup)
+                elif board[self.coordY+i][self.coordX+i] not in ["P", "T", "C", "F", "R", "D"]:
+                    if self.coordX+i >= 0 and self.coordY+i >=0:
+                        tuple_du_coup = (self.coordX+i, self.coordY+i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
+            else:
+                break
+
+        #en bas a gauche
+        for i in range (1,8):
+            if self.coordX-i >=0 and self.coordY+i <8:
+                if board[self.coordY+i][self.coordX-i] == " ":
+                    tuple_du_coup = (self.coordX-i, self.coordY+i)
+                    coups_possibles.append(tuple_du_coup)
+                elif board[self.coordY+i][self.coordX-i] not in ["P", "T", "C", "F", "R", "D"]:
+                    if self.coordX-i >=0 and self.coordY+i < 8:
+                        tuple_du_coup = (self.coordX-i, self.coordY+i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
+            else:
+                break
+
+        #coup du roi blanc
+        if self.coordX-1 >=0 and board[self.coordY][self.coordX-1] not in ["P", "T", "C", "F", "R", "D"]:
+            tuple_du_coup = (self.coordX-1, self.coordY)
+            coups_possibles.append(tuple_du_coup)
+        if self.coordY+1 <8 and self.coordX-1 >=0 and board[self.coordY+1][self.coordX-1] not in ["P", "T", "C", "F", "R", "D"]:
+                tuple_du_coup = (self.coordX-1, self.coordY+1)
+                coups_possibles.append(tuple_du_coup)
+        if self.coordY-1 >=0 and self.coordX-1 >=0 and board[self.coordY-1][self.coordX-1] not in ["P", "T", "C", "F", "R", "D"]:
+                tuple_du_coup = (self.coordX-1, self.coordY-1)
+                coups_possibles.append(tuple_du_coup)
+
+        if self.coordX+1 <8 and self.coordX+1 <8 and board[self.coordY][self.coordX+1] not in ["P", "T", "C", "F", "R", "D"]:
+            tuple_du_coup = (self.coordX+1, self.coordY)
+            coups_possibles.append(tuple_du_coup)
+        if self.coordY-1 >=0 and self.coordX+1 <8 and board[self.coordY-1][self.coordX+1] not in ["P", "T", "C", "F", "R", "D"]:
+                tuple_du_coup = (self.coordX+1, self.coordY-1)
+                coups_possibles.append(tuple_du_coup)
+        if self.coordY+1 <8 and self.coordX+1 <8 and board[self.coordY+1][self.coordX+1] not in ["P", "T", "C", "F", "R", "D"]:
+                tuple_du_coup = (self.coordX+1, self.coordY+1)
+                coups_possibles.append(tuple_du_coup)
+
+        if self.coordY-1 >=0 and board[self.coordY-1][self.coordX] not in ["P", "T", "C", "F", "R", "D"]:
+            tuple_du_coup = (self.coordX, self.coordY-1)
+            coups_possibles.append(tuple_du_coup)
+        if self.coordY+1 <8 and board[self.coordY+1][self.coordX] not in ["P", "T", "C", "F", "R", "D"]:
+            tuple_du_coup = (self.coordX, self.coordY+1)
+            coups_possibles.append(tuple_du_coup)
+
+        #coup de la tour blanche
+        #coup de la tour en haut
+        for i in range(1, 8):
+            
+            if self.coordY-i >=0:
+                if board[self.coordY-i][self.coordX] == " ":
+                    coup = (self.coordX, self.coordY-i)
+                    coups_possibles.append(coup)
+                else:
+                    if board[self.coordY-i][self.coordX] in ["p", "t", "c", "f", "r", "d"]:
+                        coup = (self.coordX, self.coordY-i)
+                        coups_possibles.append(coup)
+                    break
+                
+
+        #coup de la tour en bas
+        for i in range(1, 8):
+            if self.coordY+i <8:
+                if board[self.coordY+i][self.coordX] == " ":
+                    coup = (self.coordX, self.coordY+i)
+                    coups_possibles.append(coup)
+                else:
+                    if board[self.coordY+i][self.coordX] in ["p", "t", "c", "f", "r", "d"]:
+                        coup = (self.coordX, self.coordY+i)
+                        coups_possibles.append(coup)
+                    break
+            
+
+        #coup de la tour a gauche
+        for i in range(1, 8):  
+            if self.coordX-i >=0:
+                if board[self.coordY][self.coordX-i] == " ":
+                    coup = (self.coordX-i, self.coordY)
+                    coups_possibles.append(coup)
+                else:
+                    if board[self.coordY][self.coordX-i] in ["p", "t", "c", "f", "r", "d"]:
+                        coup = (self.coordX-i, self.coordY)
+                        coups_possibles.append(coup)
+                    break
     
-        coups_roi = RoiBlanc.get_coups_possibles(self, board)
-        coups_possibles+= coups_roi
-        coup_fou = FouBlanc.get_coups_possibles(self, board)
-        coups_possibles+= coups_fou
+        #coup de la tour a droite
+        for i in range(1, 8):
+            if self.coordX+i <8:
+                if board[self.coordY][self.coordX+i] == " ":
+                    coup = (self.coordX+i, self.coordY)
+                    coups_possibles.append(coup)
+                else:
+                    if board[self.coordY][self.coordX+i] in ["p", "t", "c", "f", "r", "d"]:
+                        coup = (self.coordX+i, self.coordY)
+                        coups_possibles.append(coup)
+                    break
 
-        
-        
-        return coups_possibles #on return un tableau avec dans chaque case le tuple (x,y) dans lequel il a le droit de se deplacer
-
+        return coups_possibles
 
 class DameNoir(Piece):
 
@@ -529,27 +645,141 @@ class DameNoir(Piece):
 
     def get_coups_possibles(self, board):#on veut connaitre vers quelle position peut se déplacer la piece
         coups_possibles = []
-        coups_possibles=[(self.coordX-1, self.coordY-1), (self.coordX, self.coordY-1), (self.coordX+1, self.coordY-1), (self.coordX+1, self.coordY), (self.coordX+1, self.coordY+1), (self.coordX, self.coordY+1), (self.coordX-1, self.coordY+1), (self.coordX-1, self.coordY)]
-        
-        for i in range (7):
-            tuple_du_coup = (self.coordX, self.coordY+i)
-            coups_possibles.append(tuple_du_coup)
-            tuple_du_coup = (self.coordX, self.coordY-i)
-            coups_possibles.append(tuple_du_coup)
-            tuple_du_coup = (self.coordX+i, self.coordY)
-            coups_possibles.append(tuple_du_coup)
-            tuple_du_coup = (self.coordX-i, self.coordY)
-            coups_possibles.append(tuple_du_coup)
+        #coup du fou noir
+        #en haut a gauche
+        for i in range (1,8):
+            if self.coordX-i >= 0 and self.coordY-i >=0:
+                if board[self.coordY-i][self.coordX-i] == " ":
+                    tuple_du_coup = (self.coordX-i, self.coordY-i)
+                    coups_possibles.append(tuple_du_coup)
+                elif board[self.coordY-i][self.coordX-i] not in ["p", "t", "c", "f", "r", "d"]:
+                    if self.coordX-i >= 0 and self.coordY-i >=0:
+                        tuple_du_coup = (self.coordX-i, self.coordY-i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
+                else:
+                    break
+            
+        #en haut a droite
+        for i in range (1,8):
+            if self.coordX+i < 8 and self.coordY-i >=0:
+                if board[self.coordY-i][self.coordX+i] == " ":
+                    tuple_du_coup = (self.coordX+i, self.coordY-i)
+                    coups_possibles.append(tuple_du_coup)
+                elif board[self.coordY-i][self.coordX+i] not in ["p", "t", "c", "f", "r", "d"]:
+                    if self.coordX+i < 8 and self.coordY-i >=0:
+                        tuple_du_coup = (self.coordX+i, self.coordY-i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
+                else:
+                    break
 
-            tuple_du_coup = (self.coordX-i, self.coordY-i)
+        #en bas a droite
+        for i in range (1,8):
+            if self.coordX+i < 8 and self.coordY+i <8:
+                if board[self.coordY+i][self.coordX+i] == " ":
+                    tuple_du_coup = (self.coordX+i, self.coordY+i)
+                    coups_possibles.append(tuple_du_coup)
+                elif board[self.coordY+i][self.coordX+i] not in ["p", "t", "c", "f", "r", "d"]:
+                    if self.coordX+i >= 0 and self.coordY+i >=0:
+                        tuple_du_coup = (self.coordX+i, self.coordY+i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
+                else:
+                    break
+
+        #en bas a gauche
+        for i in range (1,8):
+            if self.coordX-i >=0 and self.coordY+i <8:
+                if board[self.coordY+i][self.coordX-i] == " ":
+                    tuple_du_coup = (self.coordX-i, self.coordY+i)
+                    coups_possibles.append(tuple_du_coup)
+                elif board[self.coordY+i][self.coordX-i] not in ["p", "t", "c", "f", "r", "d"]:
+                    if self.coordX-i >=0 and self.coordY+i < 8:
+                        tuple_du_coup = (self.coordX-i, self.coordY+i)
+                        coups_possibles.append(tuple_du_coup)
+                        break
+                else:
+                    break
+        #coup du roi noir
+        if self.coordX-1 >=0 and board[self.coordY][self.coordX-1] not in ["p", "t", "c", "f", "r", "d"]:
+            tuple_du_coup = (self.coordX-1, self.coordY)
             coups_possibles.append(tuple_du_coup)
-            tuple_du_coup = (self.coordX+i, self.coordY-i)
+        if self.coordY+1 <8 and self.coordX-1 >=0 and board[self.coordY+1][self.coordX-1] not in ["p", "t", "c", "f", "r", "d"]:
+                tuple_du_coup = (self.coordX-1, self.coordY+1)
+                coups_possibles.append(tuple_du_coup)
+        if self.coordY-1 >=0 and self.coordX-1 >=0 and board[self.coordY-1][self.coordX-1] not in ["p", "t", "c", "f", "r", "d"]:
+                tuple_du_coup = (self.coordX-1, self.coordY-1)
+                coups_possibles.append(tuple_du_coup)
+
+        if self.coordX+1 <8 and self.coordX+1 <8 and board[self.coordY][self.coordX+1] not in ["p", "t", "c", "f", "r", "d"]:
+            tuple_du_coup = (self.coordX+1, self.coordY)
             coups_possibles.append(tuple_du_coup)
-            tuple_du_coup = (self.coordX+i, self.coordY+i)
+        if self.coordY-1 >=0 and self.coordX+1 <8 and board[self.coordY-1][self.coordX+1] not in ["p", "t", "c", "f", "r", "d"]:
+                tuple_du_coup = (self.coordX+1, self.coordY-1)
+                coups_possibles.append(tuple_du_coup)
+        if self.coordY+1 <8 and self.coordX+1 <8 and board[self.coordY+1][self.coordX+1] not in ["p", "t", "c", "f", "r", "d"]:
+                tuple_du_coup = (self.coordX+1, self.coordY+1)
+                coups_possibles.append(tuple_du_coup)
+
+        if self.coordY-1 >=0 and board[self.coordY-1][self.coordX] not in ["p", "t", "c", "f", "r", "d"]:
+            tuple_du_coup = (self.coordX, self.coordY-1)
             coups_possibles.append(tuple_du_coup)
-            tuple_du_coup = (self.coordX-i, self.coordY+i)
+        if self.coordY+1 <8 and board[self.coordY+1][self.coordX] not in ["p", "t", "c", "f", "r", "d"]:
+            tuple_du_coup = (self.coordX, self.coordY+1)
             coups_possibles.append(tuple_du_coup)
         
+        #coup de la tour noire
+        #coup de la tour en haut
+        for i in range(1, 8):
+            
+            if self.coordY-i >=0:
+                if board[self.coordY-i][self.coordX] == " ":
+                    coup = (self.coordX, self.coordY-i)
+                    coups_possibles.append(coup)
+                else:
+                    if board[self.coordY-i][self.coordX] in ["P", "T", "C", "F", "R", "D"]:
+                        coup = (self.coordX, self.coordY-i)
+                        coups_possibles.append(coup)
+                    break
+                
+
+        #coup de la tour en bas
+        for i in range(1, 8):
+            if self.coordY+i <8:
+                if board[self.coordY+i][self.coordX] == " ":
+                    coup = (self.coordX, self.coordY+i)
+                    coups_possibles.append(coup)
+                else:
+                    if board[self.coordY+i][self.coordX] in ["P", "T", "C", "F", "R", "D"]:
+                        coup = (self.coordX, self.coordY+i)
+                        coups_possibles.append(coup)
+                    break
+            
+
+        #coup de la tour a gauche
+        for i in range(1, 8):  
+            if self.coordX-i >=0:
+                if board[self.coordY][self.coordX-i] == " ":
+                    coup = (self.coordX-i, self.coordY)
+                    coups_possibles.append(coup)
+                else:
+                    if board[self.coordY][self.coordX-i] in ["P", "T", "C", "F", "R", "D"]:
+                        coup = (self.coordX-i, self.coordY)
+                        coups_possibles.append(coup)
+                    break
+    
+        #coup de la tour a droite
+        for i in range(1, 8):
+            if self.coordX+i <8:
+                if board[self.coordY][self.coordX+i] == " ":
+                    coup = (self.coordX+i, self.coordY)
+                    coups_possibles.append(coup)
+                else:
+                    if board[self.coordY][self.coordX+i] in ["P", "T", "C", "F", "R", "D"]:
+                        coup = (self.coordX+i, self.coordY)
+                        coups_possibles.append(coup)
+                    break
         
         return coups_possibles #on return un tableau avec dans chaque case le tuple (x,y) dans lequel il a le droit de se deplacer
 
