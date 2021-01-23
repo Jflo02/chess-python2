@@ -101,8 +101,6 @@ class Plateau:
         print("MISE EN PLACE ton pion peut aller en :")
         print(pionSurCase.get_coups_possibles(self.tableau))
 
-        
-
         print(f"Ou veux-tu déplacer {pionSurCase.nom} ? (exemple A5)")
         
         caseVoulu = input()
