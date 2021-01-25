@@ -34,11 +34,11 @@ class Plateau:
         self.fouBlanc1 = FouBlanc(2, 7)
         self.fouBlanc2 = FouBlanc(5, 7)
 
-        self.roiBlanc = RoiBlanc(0, 4)#A REMETTRE EN 3,7 !!!!
+        self.roiBlanc = RoiBlanc(3, 7)
 
         self.dameBlanc = DameBlanc(4, 7)
         
-        self.pionNoir1 = PionNoir(1, 2)#A REMETTRE EN 0,1 !!!!
+        self.pionNoir1 = PionNoir(0, 1)
         self.pionNoir2 = PionNoir(1, 1)
         self.pionNoir3 = PionNoir(2, 1)
         self.pionNoir4 = PionNoir(3, 1)
@@ -103,68 +103,61 @@ class Plateau:
 
     def bouger(self, couleur):
         move_ok = False
+        if self.checkEchec(couleur):
+            print("Tu es en echec !")
         while move_ok is False:
             while True:#dmd le coup et trouve quel pion est sur la case+gestion erreurs/triche
-                while True:#gere les erreurs de saisie des coordonnées
-                    print("Quelles sont les coordonnées de la pièce que tu veux jouer ?")
-                    pionAbouger = input()
-                    if self.is_saisie_correct(pionAbouger):
+                try:
+                    while True:#gere les erreurs de saisie des coordonnées
+                        print("Quelles sont les coordonnées de la pièce que tu veux jouer ?\nTu peux entrer !help pour lister tous tes coups\nTu peux entrer afficher pour afficher le plateau")
+                        pionAbouger = input()
+                        if pionAbouger == "!help":
+                            self.maj_pieces()
+                            print(self.ensembleDesCoups(couleur))
+                            print("\n")
+                            continue
+                        if pionAbouger == "afficher":
+                            self.maj_pieces()
+                            self.afficher()
+                            continue
+                        if self.is_saisie_correct(pionAbouger):
+                            break 
+                        else:
+                            print("Erreur de saisie, réessaye ")
+                
+                    lettre = self.dicoLettreToPos[pionAbouger[0].upper()]
+                    chiffre = self.dicoChiffreToPos[pionAbouger[1]]
+                    pionSurCase = self.quelPionSurCetteCase(lettre, chiffre)
+
+                    if pionSurCase.couleur != couleur:
+                        print("Ce pion n'est pas a toi ! Recommence \n")
+                    else:
+                        break
+
+                except AttributeError:
+                    print("Il n y a rien sur cette case")
+                except IndexError:
+                    print("Erreur, réessaye")
+            print(f"La liste des coups disponibles pour {pionSurCase.nom} en {pionAbouger} est :")
+
+            print(self.mouvements_possibles(pionSurCase.get_coups_possibles(self.tableau)))
+            
+            
+            while True:#gere erreur de saisie case de destination
+                try:
+                    print(f"Ou veux-tu déplacer {pionSurCase.nom} ? (exemple A5)")            
+                    caseVoulu = input()
+                    if self.is_saisie_correct(caseVoulu):
                         break 
                     else:
                         print("Erreur de saisie, réessaye ")
-                lettre = self.dicoLettreToPos[pionAbouger[0].upper()]
-                chiffre = self.dicoChiffreToPos[pionAbouger[1]]
-                pionSurCase = self.quelPionSurCetteCase(lettre, chiffre)
-
-                if pionSurCase.couleur != couleur:
-                    print("Ce pion n'est pas a toi ! Recommence \n")
-                else:
-                    break
-            print("MISE EN PLACE ton pion peut aller en :")
-            print(pionSurCase.get_coups_possibles(self.tableau))
-
-            
-            while True:#gere erreur de saisie case de destination
-                print(f"Ou veux-tu déplacer {pionSurCase.nom} ? (exemple A5)")            
-                caseVoulu = input()
-                if self.is_saisie_correct(caseVoulu):
-                    break 
-                else:
-                    print("Erreur de saisie, réessaye ")
+                except IndexError:
+                    print("Erreur, réessaye")
             lettre_voulu = self.dicoLettreToPos[caseVoulu[0].upper()]
             chiffre_voulu = self.dicoChiffreToPos[caseVoulu[1]]
-
-            #pion blanc manger en diagonale
-            if pionSurCase.affichage == "P":
-                if chiffre_voulu == pionSurCase.coordY-1:#useless
-                    if (lettre_voulu == pionSurCase.coordX+1) or (lettre_voulu == pionSurCase.coordX-1):
-                        for pieces in self.tabDesPieces:
-                            if (pieces.coordX == lettre_voulu) and pieces.coordY == chiffre_voulu:
-                                if (pionSurCase.couleur != pieces.couleur):
-                                    try:
-                                        pieceAremove = self.quelPionSurCetteCase(lettre_voulu, chiffre_voulu)
-                                        self.tabDesPieces.remove(pieceAremove)
-                                        pionSurCase.coordX = lettre_voulu
-                                        pionSurCase.coordY = chiffre_voulu
-                                        break
-                                    except:
-                                        pass
-            #pion noir manger en diagonale
-            if pionSurCase.affichage == "p":
-                if chiffre_voulu == pionSurCase.coordY+1:#useless
-                    if (lettre_voulu == pionSurCase.coordX+1) or (lettre_voulu == pionSurCase.coordX-1):
-                        for pieces in self.tabDesPieces:
-                            if (pieces.coordX == lettre_voulu) and pieces.coordY == chiffre_voulu:
-                                if (pionSurCase.couleur != pieces.couleur):
-                                    try:
-                                        pieceAremove = self.quelPionSurCetteCase(lettre_voulu, chiffre_voulu)
-                                        self.tabDesPieces.remove(pieceAremove)
-                                        pionSurCase.coordX = lettre_voulu
-                                        pionSurCase.coordY = chiffre_voulu
-                                        break
-                                    except:
-                                        pass
-
+            backup_x_piece = pionSurCase.coordX
+            backup_y_piece = pionSurCase.coordY
+            
             #deplacement des autres pieces si possible on regarde si on doit en manger une
             for coups_possibles in pionSurCase.get_coups_possibles(self.tableau):
                 #on va regarder si on est sur une piece avant de bouger pr pvr la suppr
@@ -175,21 +168,52 @@ class Plateau:
                                 if (lettre_voulu == possible_stroke[0]) & (chiffre_voulu == possible_stroke[1]) & (pionSurCase.couleur != self.quelPionSurCetteCase(possible_stroke[0], possible_stroke[1]).couleur):
                                     pieceAremove = self.quelPionSurCetteCase(lettre_voulu, chiffre_voulu)
                                     self.tabDesPieces.remove(pieceAremove)
+                                    
                                     pionSurCase.coordX = lettre_voulu
                                     pionSurCase.coordY = chiffre_voulu
-                                    move_ok = True
+                                    self.maj_pieces()
+                                    #promotion des pions
+                                    if pionSurCase.affichage == "P" and pionSurCase.coordY == 0:
+                                        print("test\n")
+                                        pieces = self.promotion(pionSurCase, couleur)
+                                    if pionSurCase.affichage == "p" and pionSurCase.coordY == 7:
+                                        pieces = self.promotion(pionSurCase, couleur)
+
+                                    if self.checkEchec(couleur):
+                                        print("tu seras en echec si tu fais ça")
+                                        pionSurCase.coordX = backup_x_piece
+                                        pionSurCase.coordY = backup_y_piece
+                                        self.maj_pieces()
+                                    else:
+                                        move_ok = True
                             except:
                                 pass
 
                 if lettre_voulu == coups_possibles[0] and chiffre_voulu == coups_possibles[1]:#si on est pas sur une autre piece : on se déplace normalement
                     pionSurCase.coordX = lettre_voulu
                     pionSurCase.coordY = chiffre_voulu
-                    move_ok = True
+                    self.maj_pieces()
+                    if pionSurCase.affichage == "P" and pionSurCase.coordY == 0:
+                        print("test2\n")
+                        pionSurCase = self.promotion(pionSurCase, couleur)
+                        self.maj_pieces()
+                    if pionSurCase.affichage == "p" and pionSurCase.coordY == 7:
+                        pionSurCase = self.promotion(pionSurCase, couleur)
+                        self.maj_pieces()
+
+                    if self.checkEchec(couleur):
+                        print("tu seras en echec si tu fais ça")
+                        pionSurCase.coordX = backup_x_piece
+                        pionSurCase.coordY = backup_y_piece
+                        self.maj_pieces()
+                        #promotion des pions
+                    
+                    else:
+                        move_ok = True
                     break
             #annonce que coup impossible
             if move_ok is False:
                 print("Coup impossible, réessaye")
-
 
     def quelPionSurCetteCase(self, x, y):
         for pieces in self.tabDesPieces:
@@ -198,22 +222,87 @@ class Plateau:
         
     def checkEchec(self, couleur):
         if couleur == "blanc":
-            print("Je test la condition d echec")
             for pieces in self.tabDesPieces:
                 if pieces.couleur != couleur:
                     for coups_possibles in pieces.get_coups_possibles(self.tableau):
                         if self.roiBlanc.coordX == coups_possibles[0] and self.roiBlanc.coordY == coups_possibles[1]:
-                            print("Le roi blanc est en echec")
                             return True
         elif couleur == "noir":
-            print("Je test la condition d echec")
             for pieces in self.tabDesPieces:
                 if pieces.couleur != couleur:
                     for coups_possibles in pieces.get_coups_possibles(self.tableau):
                         if self.roiNoir.coordX == coups_possibles[0] and self.roiNoir.coordY == coups_possibles[1]:
-                            print("Le roi noir est en echec")
                             return True
+        return False
                         
+    def is_echec_et_mat(self, couleur):
+        tab = []
+        if couleur == "blanc":
+            for coupsDuRoiPossibles in self.roiNoir.get_coups_possibles(self.tableau):#pr chaq coup possible du roi
+                for pieces in self.tabDesPieces:#on regarde chaque piece
+                    if pieces.couleur == couleur:#de la couleur opposé
+                        for coups_possibles in pieces.get_coups_possibles(self.tableau):#pr chaque coup possible de cette piece
+                            if coupsDuRoiPossibles[0] == coups_possibles[0] and coupsDuRoiPossibles[1] == coups_possibles[1]:
+                                #si le x et y du CP du Roi = x et y du CP de la piece
+                                # ==> le roi est exposé
+                                #si on arrive ici c que le roi est en echec
+                                tab.append("exposé")
+        if len(tab) == len(self.roiNoir.get_coups_possibles(self.tableau)):
+            return True
+
+        elif couleur == "noir":
+            for coupsDuRoiPossibles in self.roiBlanc.get_coups_possibles(self.tableau):
+                for pieces in self.tabDesPieces:#pr chaque piece
+                    if pieces.couleur == couleur:#pr chaque piece de la couleur inverse
+                        for coups_possibles in pieces.get_coups_possibles(self.tableau):#pr chaque coup possible des pieces adverses
+                            if coupsDuRoiPossibles[0] == coups_possibles[0] and coupsDuRoiPossibles[1] == coups_possibles[1]:
+                                #si le x et y du CP du Roi = x et y du CP de la piece
+                                # ==> le roi est exposé
+                                #si on arrive ici c que le roi est en echec
+                                tab.append("exposé")
+        if len(tab) == len(self.roiBlanc.get_coups_possibles(self.tableau)):
+            return True
+
+        return False
+
+    
+
+    def mouvements_possibles(self, tab):
+        jolie_string = ""
+        for coups in tab:
+            lettre = str(self.PosToLettre[coups[0]])
+            chiffre = str(self.PosToChiffre[coups[1]])
+            jolie_string +=  lettre + chiffre + ", "
+        return jolie_string
+
+    def ensembleDesCoups(self,couleur):
+        jolie_str2 = ""
+        for pieces in self.tabDesPieces:
+            if pieces.couleur == couleur and len(pieces.get_coups_possibles(self.tableau)) > 0:
+                posX = self.PosToLettre[pieces.coordX]
+                posY = self.PosToChiffre[pieces.coordY]
+                jolie_str1 = pieces.nom + " en " + str(posX) + str(posY) + " peut aller en : "
+                for coups in pieces.get_coups_possibles(self.tableau):
+                    lettre = str(self.PosToLettre[coups[0]])
+                    chiffre = str(self.PosToChiffre[coups[1]])
+                    case = lettre + chiffre + ', '
+                    jolie_str1 += case
+                
+                jolie_str2 += "\n" + jolie_str1
+                jolie_str1 = ""
+            
+        return jolie_str2
+  
+    def promotion(self, pion, couleur):
+        if couleur == "blanc":
+            dicoPromotion = {1 : DameBlanc(pion.coordX, pion.coordY), 2 : TourBlanc(pion.coordX, pion.coordY), 3: CavalierBlanc(pion.coordX, pion.coordY), 4 : FouBlanc(pion.coordX, pion.coordY)}
+            print("Promotion du Pion, comment voulez vous Promouvoir votre Pion ?")
+            print("1) Dame\n2) Tour\n3) Cavalier \n4) Fou")
+            choix = int(input())
+            nouvellePiece = dicoPromotion[choix]
+            print(nouvellePiece.nom)
+
+        return nouvellePiece
 
 
 plateau = Plateau()
@@ -223,7 +312,9 @@ while True:
     print("Au tour du joueur Blanc : \n")
 
     
-    plateau.checkEchec("blanc")
+    if plateau.is_echec_et_mat("blanc") is True and plateau.checkEchec("blanc") is True:
+        print("Echec et mat pour le joueur Blanc")
+        break
     plateau.bouger("blanc")
     plateau.maj_pieces()
     plateau.afficher()
@@ -231,6 +322,9 @@ while True:
 
     print("Au tour du joueur Noir : \n")
 
+    if plateau.is_echec_et_mat("noir") is True and plateau.checkEchec("noir") is True:
+        print("Echec et mat pour le joueur Noir")
+        break
     plateau.bouger("noir")
     plateau.maj_pieces()
     plateau.afficher()
