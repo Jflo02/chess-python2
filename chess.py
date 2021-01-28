@@ -174,16 +174,24 @@ class Plateau:
                                     self.maj_pieces()
                                     #promotion des pions
                                     if pionSurCase.affichage == "P" and pionSurCase.coordY == 0:
-                                        print("test\n")
-                                        pieces = self.promotion(pionSurCase, couleur)
+                                        newPion = self.promotion(pionSurCase, couleur)
+                                        self.tabDesPieces.remove(pionSurCase)
+                                        self.tabDesPieces.append(newPion)
+                                        self.maj_pieces()
+                                        pionSurCase = self.quelPionSurCetteCase(newPion.coordX, newPion.coordY)
                                     if pionSurCase.affichage == "p" and pionSurCase.coordY == 7:
-                                        pieces = self.promotion(pionSurCase, couleur)
+                                        newPion = self.promotion(pionSurCase, couleur)
+                                        self.tabDesPieces.remove(pionSurCase)
+                                        self.tabDesPieces.append(newPion)
+                                        self.maj_pieces()
+                                        pionSurCase = self.quelPionSurCetteCase(newPion.coordX, newPion.coordY)
 
                                     if self.checkEchec(couleur):
                                         print("tu seras en echec si tu fais ça")
                                         pionSurCase.coordX = backup_x_piece
                                         pionSurCase.coordY = backup_y_piece
                                         self.maj_pieces()
+                                        
                                     else:
                                         move_ok = True
                             except:
@@ -194,11 +202,14 @@ class Plateau:
                     pionSurCase.coordY = chiffre_voulu
                     self.maj_pieces()
                     if pionSurCase.affichage == "P" and pionSurCase.coordY == 0:
-                        print("test2\n")
-                        pionSurCase = self.promotion(pionSurCase, couleur)
+                        newPion = self.promotion(pionSurCase, couleur)
+                        self.tabDesPieces.remove(pionSurCase)
+                        self.tabDesPieces.append(newPion)
                         self.maj_pieces()
                     if pionSurCase.affichage == "p" and pionSurCase.coordY == 7:
-                        pionSurCase = self.promotion(pionSurCase, couleur)
+                        newPion = self.promotion(pionSurCase, couleur)
+                        self.tabDesPieces.remove(pionSurCase)
+                        self.tabDesPieces.append(newPion)
                         self.maj_pieces()
 
                     if self.checkEchec(couleur):
@@ -236,36 +247,38 @@ class Plateau:
         return False
                         
     def is_echec_et_mat(self, couleur):
-        tab = []
+        nb_coups_en_echec = 0
         if couleur == "blanc":
-            for coupsDuRoiPossibles in self.roiNoir.get_coups_possibles(self.tableau):#pr chaq coup possible du roi
-                for pieces in self.tabDesPieces:#on regarde chaque piece
-                    if pieces.couleur == couleur:#de la couleur opposé
-                        for coups_possibles in pieces.get_coups_possibles(self.tableau):#pr chaque coup possible de cette piece
-                            if coupsDuRoiPossibles[0] == coups_possibles[0] and coupsDuRoiPossibles[1] == coups_possibles[1]:
-                                #si le x et y du CP du Roi = x et y du CP de la piece
-                                # ==> le roi est exposé
-                                #si on arrive ici c que le roi est en echec
-                                tab.append("exposé")
-        if len(tab) == len(self.roiNoir.get_coups_possibles(self.tableau)):
-            return True
+            for coups_possibles in self.roiBlanc.get_coups_possibles(self.tableau):#pr chaque CP du R
+                coup_en_echec = 0
+                for pieces in self.tabDesPieces:#on regarde chaq piece
+                    if pieces.couleur != couleur:#on garde que les pieces adverses
+                        for coups_pieces in pieces.get_coups_possibles(self.tableau):#si un coup de cette piece met le R en echec
+                            if coup_en_echec == 0:
+                                if coups_possibles[0] == coups_pieces[0] and coups_possibles[1] == coups_pieces[1]:
+                                    #si le coup posisble du RoiNoir sera en echec:
+                                    coup_en_echec = 1 #et la on doit changer de coup
+                nb_coups_en_echec+=coup_en_echec
+                
 
         elif couleur == "noir":
-            for coupsDuRoiPossibles in self.roiBlanc.get_coups_possibles(self.tableau):
-                for pieces in self.tabDesPieces:#pr chaque piece
-                    if pieces.couleur == couleur:#pr chaque piece de la couleur inverse
-                        for coups_possibles in pieces.get_coups_possibles(self.tableau):#pr chaque coup possible des pieces adverses
-                            if coupsDuRoiPossibles[0] == coups_possibles[0] and coupsDuRoiPossibles[1] == coups_possibles[1]:
-                                #si le x et y du CP du Roi = x et y du CP de la piece
-                                # ==> le roi est exposé
-                                #si on arrive ici c que le roi est en echec
-                                tab.append("exposé")
-        if len(tab) == len(self.roiBlanc.get_coups_possibles(self.tableau)):
+            for coups_possibles in self.roiNoir.get_coups_possibles(self.tableau):#pr chaque CP du R
+                coup_en_echec = 0
+                for pieces in self.tabDesPieces:#on regarde chaq piece
+                    if pieces.couleur != couleur:#on garde que les pieces adverses
+                        for coups_pieces in pieces.get_coups_possibles(self.tableau):#si un coup de cette piece met le R en echec
+                            if coup_en_echec == 0:
+                                if coups_possibles[0] == coups_pieces[0] and coups_possibles[1] == coups_pieces[1]:
+                                    #si le coup posisble du RoiNoir sera en echec:
+                                    coup_en_echec = 1 #et la on doit changer de coup
+                nb_coups_en_echec+=coup_en_echec
+
+        if nb_coups_en_echec == len(self.roiNoir.get_coups_possibles(self.tableau)):
+            return True
+        if nb_coups_en_echec == len(self.roiBlanc.get_coups_possibles(self.tableau)):
             return True
 
         return False
-
-    
 
     def mouvements_possibles(self, tab):
         jolie_string = ""
@@ -300,32 +313,145 @@ class Plateau:
             print("1) Dame\n2) Tour\n3) Cavalier \n4) Fou")
             choix = int(input())
             nouvellePiece = dicoPromotion[choix]
-            print(nouvellePiece.nom)
+            print(nouvellePiece)
+
+        if couleur == "noir":
+            dicoPromotion = {1 : DameNoir(pion.coordX, pion.coordY), 2 : TourNoir(pion.coordX, pion.coordY), 3: CavalierNoir(pion.coordX, pion.coordY), 4 : FouNoir(pion.coordX, pion.coordY)}
+            print("Promotion du Pion, comment voulez vous Promouvoir votre Pion ?")
+            print("1) Dame\n2) Tour\n3) Cavalier \n4) Fou")
+            choix = int(input())
+            nouvellePiece = dicoPromotion[choix]
+            print(nouvellePiece)
 
         return nouvellePiece
 
+    def ia_random(self, couleur):
+
+        while True:
+            #en premier on choisit une piece random
+            while True:#ici on while jusqua jouer une piece noire
+                pieceAbouger = random.choice(self.tabDesPieces)
+                if pieceAbouger.couleur == couleur and len(pieceAbouger.get_coups_possibles(self.tableau)) >0 :
+                    break
+            lettre = self.PosToLettre[pieceAbouger.coordX]
+            chiffre = self.PosToChiffre[pieceAbouger.coordY]
+            jolie_string= str(lettre) + str(chiffre)
+            print(f"L'IA joue {pieceAbouger.nom} en {jolie_string}")
+
+            #on va s'occuper de le placer sur une case aléatoire mtn
+            coups_possibles = pieceAbouger.get_coups_possibles(self.tableau)#on a un tab de tuples (x,y)
+            caseRandom = random.choice(coups_possibles)
+            lettre = self.PosToLettre[caseRandom[0]]
+            chiffre = self.PosToChiffre[caseRandom[1]]
+            jolie_string= str(lettre) + str(chiffre)
+            print(f"Il met {pieceAbouger.nom} en {jolie_string}")
+            pieceAbouger.coordX = caseRandom[0]
+            pieceAbouger.coordY = caseRandom[1]
+            self.maj_pieces()
+            break
+
+    def deux_ia_random(self, couleur):
+        
+        while True:
+            #en premier on choisit une piece random
+            while True:#ici on while jusqua jouer une piece noire
+                pieceAbouger = random.choice(self.tabDesPieces)
+                if pieceAbouger.couleur == couleur and len(pieceAbouger.get_coups_possibles(self.tableau)) >0 :
+                    break
+            #on va s'occuper de le placer sur une case aléatoire mtn
+            coups_possibles = pieceAbouger.get_coups_possibles(self.tableau)#on a un tab de tuples (x,y)
+            caseRandom = random.choice(coups_possibles)
+            pieceAbouger.coordX = caseRandom[0]
+            pieceAbouger.coordY = caseRandom[1]
+            self.maj_pieces()
+            break
 
 plateau = Plateau()
 plateau.afficher()
-
-while True:
-    print("Au tour du joueur Blanc : \n")
-
+listeJouerPossibles = [1,2,3]
+while True:#on gere les erreurs de saisie
+    print("Vous voulez jouer :")
+    print("1) Contre un autre joueur\n2) Contre une Ia aléatoire\n3) 2 IA l'une contre l'autre 500 fois (pas 10 000 pour des soucis de temps et de performance)")
     
-    if plateau.is_echec_et_mat("blanc") is True and plateau.checkEchec("blanc") is True:
-        print("Echec et mat pour le joueur Blanc")
-        break
-    plateau.bouger("blanc")
-    plateau.maj_pieces()
-    plateau.afficher()
-    
+    try:
+        jouer = int(input())
+        if jouer in listeJouerPossibles:
+            break
+        else:
+            print("Erreur, réessayer")
+    except ValueError:
+        print("Erreur, réessayer")
 
-    print("Au tour du joueur Noir : \n")
 
-    if plateau.is_echec_et_mat("noir") is True and plateau.checkEchec("noir") is True:
-        print("Echec et mat pour le joueur Noir")
-        break
-    plateau.bouger("noir")
-    plateau.maj_pieces()
-    plateau.afficher()
-    
+if jouer == 1:
+    print("Vous jouer contre un joueur")
+    while True:
+
+        print("Au tour du joueur Blanc : \n")
+
+        if plateau.is_echec_et_mat("blanc") is True and plateau.checkEchec("blanc") is True:
+            print("Echec et mat pour le joueur Blanc")
+            break
+        plateau.bouger("blanc")
+        plateau.maj_pieces()
+        plateau.afficher()
+        
+        print("Au tour du joueur Noir : \n")
+        
+        if plateau.is_echec_et_mat("noir") is True and plateau.checkEchec("noir") is True:
+            print("Echec et mat pour le joueur Noir")
+            break
+        plateau.bouger("noir")
+        plateau.maj_pieces()
+        plateau.afficher()
+
+elif jouer == 2:
+    print("Vous jouer contre une IA")
+    print("Vous jouez les blancs, l'IA les noirs")
+    while True:
+        print("Au tour du joueur (Blanc) : \n")
+
+        if plateau.is_echec_et_mat("blanc") is True and plateau.checkEchec("blanc") is True:
+            print("Echec et mat pour le joueur (Blanc)")
+            break
+        plateau.bouger("blanc")
+        plateau.maj_pieces()
+        plateau.afficher()
+
+        print("Au tour de l'IA (Noir) : \n")
+        
+        if plateau.is_echec_et_mat("noir") is True and plateau.checkEchec("noir") is True:
+            print("Echec et mat pour l'IA")
+            break
+        plateau.ia_random("noir")
+        plateau.maj_pieces()
+        plateau.afficher()
+
+elif jouer ==3:
+    print("Deux IA vont jouer ensemble")
+    victoireBlanc = 0
+    victoireNoir = 0
+
+    for i in range (500):
+        plateau = Plateau()
+        while True:
+            #au tour de l ia blanc            
+
+            if plateau.is_echec_et_mat("blanc") is True and plateau.checkEchec("blanc") is True:
+                print(f"blanc : {victoireBlanc}")
+                victoireNoir +=1
+                break
+            plateau.deux_ia_random("blanc")
+            plateau.maj_pieces()
+
+            #au tour de l ia noir            
+            if plateau.is_echec_et_mat("noir") is True and plateau.checkEchec("noir") is True:
+                print(f"noir : {victoireNoir}")
+                victoireBlanc +=1
+                break
+            plateau.deux_ia_random("noir")
+            plateau.maj_pieces()
+    percentBlanc = victoireBlanc * 0.2
+    percentNoir = victoireNoir * 0.2
+    print(f"L'IA Blanche a gagné {victoireBlanc} fois soit {percentBlanc} % des parties")
+    print(f"L'IA Noire a gagné {victoireNoir} fois soit {percentNoir} % des parties")

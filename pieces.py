@@ -50,8 +50,9 @@ class PionNoir(Piece):
     def get_coups_possibles(self, board):#on veut connaitre vers quelle position peut se déplacer la piece
         coups_possibles = []
         tuple_du_coup = (self.coordX, self.coordY+1)
-        if board[self.coordY+1][self.coordX] == " ":
-            coups_possibles.append(tuple_du_coup)
+        if self.coordY+1 <8:
+            if board[self.coordY+1][self.coordX] == " ":
+                coups_possibles.append(tuple_du_coup)
         try:
             if board[self.coordY+1][self.coordX+1] != " " and self.coordX+1 <8 and board[self.coordY+1][self.coordX] not in ["p", "t", "c", "f", "r", "d"]:
                 tuple_du_coup = (self.coordX+1, self.coordY+1)
