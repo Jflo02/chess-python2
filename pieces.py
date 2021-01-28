@@ -54,12 +54,12 @@ class PionNoir(Piece):
             if board[self.coordY+1][self.coordX] == " ":
                 coups_possibles.append(tuple_du_coup)
         try:
-            if board[self.coordY+1][self.coordX+1] != " " and self.coordX+1 <8 and board[self.coordY+1][self.coordX] not in ["p", "t", "c", "f", "r", "d"]:
+            if board[self.coordY+1][self.coordX+1] != " " and self.coordX+1 <8 and board[self.coordY+1][self.coordX+1] not in ["p", "t", "c", "f", "r", "d"]:
                 tuple_du_coup = (self.coordX+1, self.coordY+1)
         except:
             pass
         try:
-            if board[self.coordY+1][self.coordX-1] != " " and self.coordX-1 >=0 and board[self.coordY+1][self.coordX] not in ["p", "t", "c", "f", "r", "d"]:
+            if board[self.coordY+1][self.coordX-1] != " " and self.coordX-1 >=0 and board[self.coordY+1][self.coordX-1] not in ["p", "t", "c", "f", "r", "d"]:
                 tuple_du_coup = (self.coordX-1, self.coordY+1)
                 coups_possibles.append(tuple_du_coup)
         except:
